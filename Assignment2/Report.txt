@@ -1,0 +1,36 @@
+I have implemented a greedy solution for this submission.
+My thinking process was as follows, 
+First I realised that since we do not know the input state, I figured there could be no algorithm, which would win everytime. 
+Hence I decided to use a greedy approach, as that seemed to be the best from what I could do.
+
+This solution has made nodes in the output DFA on the basis of the set of states which can reach that particular node, from the input DFA.
+Since the starting input is not known, we decide that the first node, is just a set of all the nodes of the input DFA.
+The greedy logic in this is that, for each node, since we know the set of states from the input which can reach it, 
+we assign it a state, of the opposing state. For example if 4 Rocks, 2 Papers and 1 Scissor, can reach the current state, 
+then the state for the output node, would be Paper, as it is going to win 4/7 times.
+
+Now we have to make the R,P,S transitions for the output node. Imagine that output node has been Paper greedily by us.
+So for the Rock transition, that means the opponent is going to play rock, and we are playing paper.
+In the input DFA, the opponent plays rock, in the set of nodes that are in the Rock state.
+If we play paper, that means the input graph, is going for a paper transition.
+So what we do is we check the set of states assigned by that node, we see which of them are Rock, and we see the paper transitions of those nodes.
+
+Those nodes are the set of nodes that can reach the Rock transition for the current node. 
+If the set is empty, then we know that this state would never arise, however we still have to assign the rock transition some value, 
+So I have given it the base value of the first node, knowing that it would not really matter.
+If the set has come before, then I just assign the rock transition of that particular node, the value of the node which has the same set.
+
+But the main case is when this new set is unique.
+Since we have defined the nodes of the output DFA to be a unique set of nodes which can reach the output node from the input DFA, 
+we create a new node at this point. We store the relation between the node number and the set corresponding to it using data structures.
+
+The code essentially follows a BFS style logic, as it first searches one node, then sees its three children, the Rock, Paper and Scissor transitions.
+If a particular node is not created then we first create it and then add it into the queue just as in a BFS.
+
+The reason this code works with such a high win % is because of this intuition - 
+Let us look at this output dfa as a tree, with its root node being the first node, 
+all the children nodes will definetely have in its set of states, the number of states <= the parent.
+This is true for obvious reasons, but this means that with each level, our predicitability is increasing, 
+We are getting more accurate with what we should play, becuase we know a lower number of sets are going to reach that node each and everytime. 
+With the increase in the predicitability comes the increase in the accuracy of our play.
+This results in a high win % over a span of 10000 test cases.
